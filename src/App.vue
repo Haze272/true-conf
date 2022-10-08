@@ -1,5 +1,5 @@
 <template>
-  <HelloWorld msg="Рахим Итегез эченде Vue.js + TypeScript App"/>
+  <HelloWorld/>
 </template>
 
 <script lang="ts">
@@ -23,11 +23,6 @@ export default class App extends Vue {}
   text-align: center;
   color: #2c3e50;
   height: 100%;
-  display: grid;
-  justify-content: center;
-  align-items: center;
-  grid-template-rows: 1fr;
-  grid-template-columns: 1fr;
 }
 
 </style>
