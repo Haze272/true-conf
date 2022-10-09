@@ -4,20 +4,20 @@
     </div>
   </section>
   <section class="building">
-    <div class="floor">
-      <button @click="greet">Press me</button>
+    <div class="floor" floor-number="5">
+      <button @click="callElevator">Press me</button>
     </div>
-    <div class="floor">
-      <button @click="greet">Press me</button>
+    <div class="floor" floor-number="4">
+      <button @click="callElevator">Press me</button>
     </div>
-    <div class="floor">
-      <button @click="greet">Press me</button>
+    <div class="floor" floor-number="3">
+      <button @click="callElevator">Press me</button>
     </div>
-    <div class="floor">
-      <button @click="greet">Press me</button>
+    <div class="floor" floor-number="2">
+      <button @click="callElevator">Press me</button>
     </div>
-    <div class="floor">
-      <button @click="greet">Press me</button>
+    <div class="floor" floor-number="1">
+      <button @click="callElevator">Press me</button>
     </div>
   </section>
 </template>
@@ -35,14 +35,14 @@ export default class HelloWorld extends Vue {
     elevator: HTMLDivElement
   }
 
-  elevatorPosition = 100;
+  elevatorPosition = 300;
 
   mounted () {
     this.$refs.elevator.style.transform = 'translateY(' + this.elevatorPosition + '%)'
   }
 
-  goDown (floors = 1) {
-    for (let i = 1; i <= floors; i++) {
+  goDown (floors: number) {
+    for (let i = 0; i < floors; i++) {
       if (this.elevatorPosition === 400) {
         console.log('Elevator: I can\'t go down!')
         return
@@ -50,26 +50,36 @@ export default class HelloWorld extends Vue {
       this.elevatorPosition += 100
       this.$refs.elevator.style.transition = 'transform ' + 1000 * floors + 'ms'
       this.$refs.elevator.style.transform = 'translateY(' + this.elevatorPosition + '%)'
-      console.log('Elevator: I went down!')
     }
   }
 
-  goUp (floors = 1) {
-    for (let i = 1; i <= floors; i++) {
+  goUp (floors: number) {
+    for (let i = 0; i < floors; i++) {
       if (this.elevatorPosition === 0) {
         console.log('Elevator: I can\'t go up!')
         return
       }
-      this.elevatorPosition -= 100 * floors
+      this.elevatorPosition -= 100
       this.$refs.elevator.style.transition = 'transform ' + 1000 * floors + 'ms'
       this.$refs.elevator.style.transform = 'translateY(' + this.elevatorPosition + '%)'
-      console.log('Elevator: I went up!')
     }
   }
 
-  greet ($event: any): void {
-    //  console.log($event.target.parentElement.)
-    this.goDown(1)
+  getCurrentFloor (): number {
+    return 5 - (this.elevatorPosition / 100)
+  }
+
+  callElevator ($event: any): void {
+    //  console.log($event.target.parentElement.getAttribute('floor-number'))
+    const target = $event.target.parentElement.getAttribute('floor-number')
+    const floorDiff = target - this.getCurrentFloor()
+
+    if (floorDiff > 0) {
+      this.goUp(floorDiff)
+    } else if (floorDiff < 0) {
+      this.goDown(Math.abs(floorDiff))
+    }
+    console.log(this.getCurrentFloor())
   }
 }
 </script>
