@@ -36,6 +36,8 @@ export default class HelloWorld extends Vue {
   }
 
   elevatorPosition = 300;
+  queue: number[] = [];
+  isMoving = false;
 
   mounted () {
     this.$refs.elevator.style.transform = 'translateY(' + this.elevatorPosition + '%)'
@@ -51,6 +53,8 @@ export default class HelloWorld extends Vue {
       this.$refs.elevator.style.transition = 'transform ' + 1000 * floors + 'ms'
       this.$refs.elevator.style.transform = 'translateY(' + this.elevatorPosition + '%)'
     }
+
+    this.queue.shift()
   }
 
   goUp (floors: number) {
@@ -63,6 +67,8 @@ export default class HelloWorld extends Vue {
       this.$refs.elevator.style.transition = 'transform ' + 1000 * floors + 'ms'
       this.$refs.elevator.style.transform = 'translateY(' + this.elevatorPosition + '%)'
     }
+
+    this.queue.shift()
   }
 
   getCurrentFloor (): number {
@@ -70,16 +76,20 @@ export default class HelloWorld extends Vue {
   }
 
   callElevator ($event: any): void {
-    //  console.log($event.target.parentElement.getAttribute('floor-number'))
-    const target = $event.target.parentElement.getAttribute('floor-number')
-    const floorDiff = target - this.getCurrentFloor()
+    const target: number = $event.target.parentElement.getAttribute('floor-number')
+    this.queue.push(target)
 
-    if (floorDiff > 0) {
-      this.goUp(floorDiff)
-    } else if (floorDiff < 0) {
-      this.goDown(Math.abs(floorDiff))
+    if (!this.isMoving) {
+      this.isMoving = true
+      const floorDiff = this.queue[0] - this.getCurrentFloor()
+
+      if (floorDiff > 0) {
+        this.goUp(floorDiff)
+      } else if (floorDiff < 0) {
+        this.goDown(Math.abs(floorDiff))
+      }
+      console.log(this.getCurrentFloor())
     }
-    console.log(this.getCurrentFloor())
   }
 }
 </script>
