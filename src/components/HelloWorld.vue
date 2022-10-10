@@ -84,7 +84,7 @@ export default class HelloWorld extends Vue {
       this.queue.shift()
       console.log(this.queue)
       if (this.queue.length >= 1) {
-        this.moveToTarget(this.queue[1])
+        this.moveToTarget(this.queue[0])
       }
     }, 3000)
   }
