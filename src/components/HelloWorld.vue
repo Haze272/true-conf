@@ -71,22 +71,24 @@ export default class HelloWorld extends Vue {
   }
 
   moveToTarget (target: number) {
-    const floorDiff = target - this.getCurrentFloor()
+    let floorDiff = target - this.getCurrentFloor()
 
     if (floorDiff > 0) {
-      console.log('diff est')
       this.goUp(floorDiff)
     } else if (floorDiff < 0) {
-      console.log('diff est')
-      this.goDown(Math.abs(floorDiff))
+      floorDiff = Math.abs(floorDiff)
+      this.goDown(floorDiff)
     }
+
     setTimeout(() => {
       this.queue.shift()
       console.log(this.queue)
       if (this.queue.length >= 1) {
-        this.moveToTarget(this.queue[0])
+        setTimeout(() => {
+          this.moveToTarget(this.queue[0])
+        }, 1000)
       }
-    }, 3000)
+    }, 1000 * floorDiff)
   }
 
   callElevator ($event: any): void {
@@ -96,8 +98,6 @@ export default class HelloWorld extends Vue {
     if (this.queue.length === 1) {
       console.log()
       this.moveToTarget(target)
-    } else {
-      console.log('сработало!')
     }
   }
 }
