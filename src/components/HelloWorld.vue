@@ -1,6 +1,7 @@
 <template>
   <section class="lift-shaft">
     <div id="elevator" ref="elevator">
+      <div class="indication" ref="elevator-indication">{{ this.currentFloor }}</div>
     </div>
   </section>
   <section class="building">
@@ -35,8 +36,25 @@ export default class HelloWorld extends Vue {
     elevator: HTMLDivElement
   }
 
-  elevatorPosition = 300;
+  protected _elevatorPosition = 300;
+  protected _currentFloor = 2;
   queue: number[] = [];
+
+  public set elevatorPosition (position: number) {
+    this._elevatorPosition = position
+  }
+
+  public get elevatorPosition () {
+    return this._elevatorPosition
+  }
+
+  public set currentFloor (floor: number) {
+    this._currentFloor = floor
+  }
+
+  public get currentFloor () {
+    return this._currentFloor
+  }
 
   mounted () {
     this.$refs.elevator.style.transform = 'translateY(' + this.elevatorPosition + '%)'
@@ -51,6 +69,8 @@ export default class HelloWorld extends Vue {
       this.elevatorPosition += 100
       this.$refs.elevator.style.transition = 'transform ' + 1000 * floors + 'ms'
       this.$refs.elevator.style.transform = 'translateY(' + this.elevatorPosition + '%)'
+
+      this.currentFloor = this.getCurrentFloor()
     }
   }
 
@@ -61,8 +81,10 @@ export default class HelloWorld extends Vue {
         return
       }
       this.elevatorPosition -= 100
-      this.$refs.elevator.style.transition = 'transform ' + 1000 * floors + 'ms'
+      this.$refs.elevator.style.transition = 'transform ' + 1000 * floors + 'ms cubic-bezier(0.46, 0.03, 0.52, 0.96) 0s'
       this.$refs.elevator.style.transform = 'translateY(' + this.elevatorPosition + '%)'
+
+      this.currentFloor = this.getCurrentFloor()
     }
   }
 
@@ -78,6 +100,8 @@ export default class HelloWorld extends Vue {
     } else if (floorDiff < 0) {
       floorDiff = Math.abs(floorDiff)
       this.goDown(floorDiff)
+    } else if (floorDiff === 0) {
+      return
     }
 
     setTimeout(() => {
@@ -118,6 +142,17 @@ section.lift-shaft {
 #elevator {
   height: calc(100% / 5);
   background-color: #00ffc8;
+  display: grid;
+  justify-items: center;
+}
+
+.indication {
+  width: 50%;
+  height: 20%;
+  background-color: #d3d3d3;
+  display: grid;
+  justify-content: center;
+  align-items: center;
 }
 
 section.building {
